@@ -46,6 +46,12 @@ mkdir -p $DIR
 python mls_scraper.py -c 95051,95054,95055 -t Townhouse,Condominium,Triplex,Fourplex -e -p 2000000 -f "$DIR/$NOW-results.txt" "santa clara" 2> "$DIR/$NOW-errors.txt"
 collectDiffs $DIR $EMAIL_REPORT_FILE
 
+# cheap houses
+DIR="cheap"
+mkdir -p $DIR
+python mls_scraper.py -c 94085,94086,94087,95051,95054,95055 -t Townhouse,Condominium,Triplex,Fourplex -e -p 1000000 -f "$DIR/$NOW-results.txt" "" 2> "$DIR/$NOW-errors.txt"
+collectDiffs $DIR $EMAIL_REPORT_FILE
+
 if [ -f $EMAIL_REPORT_FILE ]; then
     # SEND EMAIL REPORT
     mail -s "NEW HOUSING CHANGE" bhh1988@gmail.com < $EMAIL_REPORT_FILE
