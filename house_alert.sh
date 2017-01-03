@@ -37,13 +37,13 @@ collectDiffs $DIR $EMAIL_REPORT_FILE
 # sunnyvale in-law units
 DIR="sunnyvale_inlaw"
 mkdir -p $DIR
-python mls_scraper.py -c 94085,94086,94087 -t Townhouse,Condominium,Triplex,Fourplex -e -z "R0,R1,R1AB,R-1,SU" -x -p 2000000 -f "$DIR/$NOW-results.txt" "sunnyvale" 2> "$DIR/$NOW-errors.txt"
+python mls_scraper.py -c 94085,94086,94087 -t Townhouse,Condominium,Triplex,Fourplex -e -z "R0,R1,R1AB,R-1,SU" -x -s 5000 -p 2000000 -f "$DIR/$NOW-results.txt" "sunnyvale" 2> "$DIR/$NOW-errors.txt"
 collectDiffs $DIR $EMAIL_REPORT_FILE
 
 # santaclara in-law units
 DIR="santaclara_inlaw"
 mkdir -p $DIR
-python mls_scraper.py -c 95051,95054,95055 -t Townhouse,Condominium,Triplex,Fourplex -e -p 2000000 -f "$DIR/$NOW-results.txt" "santa clara" 2> "$DIR/$NOW-errors.txt"
+python mls_scraper.py -c 95051,95054,95055 -t Townhouse,Condominium,Triplex,Fourplex -e -s 7000 -p 2000000 -f "$DIR/$NOW-results.txt" "santa clara" 2> "$DIR/$NOW-errors.txt"
 collectDiffs $DIR $EMAIL_REPORT_FILE
 
 # cheap houses
