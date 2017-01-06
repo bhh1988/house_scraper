@@ -20,6 +20,7 @@ parser.add_option("-t", "--types", action="store", dest="types", default=None, h
 parser.add_option("-e", "--excludeTypes", action="store_const", const=True, default=False, help="Whether the list of types provided should be treated as a blacklist.")
 parser.add_option("-l", "--location", action="store", dest="location", default=None, help="Approximate location where you want the house, in latitude,longitude coordinates.")
 parser.add_option("-d", "--distance", action="store", dest="distance", default=2, help="Distance from location where you want the house (in miles).")
+parser.add_option("-g", "--schools", action="store", dest="schools", default=None, help="Comma-separated list of schools to filter by, in the Fremont Union High or Los Gatos-Saratoga Joint Union High districts.")
 parser.add_option("-f", "--jsonFilename", action="store", dest="filename", default=None, help="Write json results to provided file name.")
 
 (options, args) = parser.parse_args()
@@ -96,6 +97,21 @@ def matchesFilters(json):
             sys.stderr.write("FAILED TO GET DISTANCE!\n")
             sys.stderr.write("LATITUDE: " + str(jsonRes['propertyInfo']['latitude']) + "\n")
             sys.stderr.write("LONGITUDE: " + str(jsonRes['propertyInfo']['longitude']) + "\n")
+
+    # filter by highschool district
+    if options.schools:
+        highschools = jsonRes['features']["High School District"]['m_Item1'] # for some reason this is an array...
+        if highschools[0] != "Fremont Union High" and highschools[0] != "Los Gatos-Saratoga Joint Union High":
+            return False
+        schoolsArr = options.schools.split(',')
+        found = False
+        for school in schoolsArr:
+            description = jsonRes['propertyInfo']['publicRemarks']
+            if school in description:
+                found = True
+        if found == False:
+            return False
+
     return True
 
 payload = {
