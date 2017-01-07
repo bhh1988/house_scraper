@@ -26,7 +26,8 @@ function collectDiffs {
 }
 
 NOW=`date +"%y-%m-%d-%H-%M-%S"`
-EMAIL_REPORT_FILE="$NOW-report.txt"
+mkdir -p reports
+EMAIL_REPORT_FILE="reports/$NOW-report.txt"
 
 # house close to sunnyvale caltrain station
 DIR="sunnyvale_caltrain"
