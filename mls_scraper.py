@@ -6,6 +6,7 @@ from math import cos, asin, sqrt
 from optparse import OptionParser
 import re
 import requests
+import subprocess
 import sys
 
 parser = OptionParser(usage="usage: %prog [options] <city>", description="This script scrapes mlslistings and uncovers matches based on specified criteria")
@@ -21,6 +22,8 @@ parser.add_option("-e", "--excludeTypes", action="store_const", const=True, defa
 parser.add_option("-l", "--location", action="store", dest="location", default=None, help="Approximate location where you want the house, in latitude,longitude coordinates.")
 parser.add_option("-d", "--distance", action="store", dest="distance", default=2, help="Distance from location where you want the house (in miles).")
 parser.add_option("-g", "--schools", action="store", dest="schools", default=None, help="Comma-separated list of schools to filter by, in the Fremont Union High or Los Gatos-Saratoga Joint Union High districts.")
+parser.add_option("-H", "--Homestead", action="store_const", const=True, default=False, help="House should be within Homestead High boundaries.")
+parser.add_option("-W", "--Wilcox", action="store_const", const=True, default=False, help="House should be within Wilcox High boundaries.")
 parser.add_option("-f", "--jsonFilename", action="store", dest="filename", default=None, help="Write json results to provided file name.")
 
 (options, args) = parser.parse_args()
@@ -111,6 +114,23 @@ def matchesFilters(json):
                 found = True
         if found == False:
             return False
+
+    if options.Homestead or options.Wilcox:
+        try:
+            if options.Homestead:
+                script = "homestead.js"
+            else:
+                script = "wilcox.js"
+            lat1 = float(jsonRes['propertyInfo']['latitude'])
+            lon1 = float(jsonRes['propertyInfo']['longitude'])
+            output = subprocess.Popen(["node", script, str(lat1), str(lon1)], stdout=subprocess.PIPE).communicate()[0]
+            output = output.strip()
+            if output == "false":
+                return False
+        except ValueError:
+            sys.stderr.write("FAILED TO GET DISTANCE!\n")
+            sys.stderr.write("LATITUDE: " + str(jsonRes['propertyInfo']['latitude']) + "\n")
+            sys.stderr.write("LONGITUDE: " + str(jsonRes['propertyInfo']['longitude']) + "\n")
 
     return True
 
